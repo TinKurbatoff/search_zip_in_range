@@ -25,6 +25,7 @@ def ZIPcodesInRangeList(_zip,_range,_results=0):
 
 
 def main():
+    global VERBOSITY; 
     parser = argparse.ArgumentParser(description='Prints all zipcodes in range')
     parser.add_argument('zip', metavar='<zip code>', help='the base ZIP code for search ')
     parser.add_argument('--dist', dest='distance', type=int, 
@@ -34,12 +35,11 @@ def main():
                     default=0,
                     help='limit results to number')
     parser.add_argument("-v", "--verbose", help="increase output verbosity",
-                    action="store_false")
-    VERBOSITY = args.verbosity;
-
-    if VERBOSITY:
-        print('—————————————————————————————————————')
+                    action="store_true", default=False)
     args = parser.parse_args()
+
+    VERBOSITY = args.verbose;
+    print('—————————————————————————————————————')
     if VERBOSITY:
         print( 'ZIP:{}, Distance:{}'.format(args.zip, args.distance))
     data = ZIPcodesInRangeList(args.zip, args.distance,args.limit)
