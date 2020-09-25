@@ -4,24 +4,30 @@ import argparse
 # Default VERBOSITY level
 VERBOSITY = False
 
-def ZIPcodesInRange(zip,range,results=0):
-    #
-    search = SearchEngine(simple_zipcode=True, db_file_dir="/tmp")  # set simple_zipcode=False to use rich info database
-    zipcode = search.by_zipcode(zip)
-    if VERBOSITY:
-        print('ZIP search results:')
-        print(zipcode)
-    if VERBOSITY:
-        print('Center coordiante: Lat:{} Long:{}'.format(zipcode.lat, zipcode.lng))
-    res = search.by_coordinates(zipcode.lat, zipcode.lng, radius=range, returns=results)
-    return res
 
-def ZIPcodesInRangeList(_zip,_range,_results=0):
-    #
-    _data = []
-    for zips in ZIPcodesInRange(_zip, _range, _results):
-        _data.append(zips.zipcode)
-    return _data
+class ZIPcodesInRange(object):
+    """docstring for ClassName"""
+    def __init__(self, default_range=30):
+        self.range = default_range
+        
+    def search(self, zip,range,results=0):
+        #
+        search = SearchEngine(simple_zipcode=True, db_file_dir="/tmp")  # set simple_zipcode=False to use rich info database
+        zipcode = search.by_zipcode(zip)
+        if VERBOSITY:
+            print('ZIP search results:')
+            print(zipcode)
+        if VERBOSITY:
+            print('Center coordiante: Lat:{} Long:{}'.format(zipcode.lat, zipcode.lng))
+        res = search.by_coordinates(zipcode.lat, zipcode.lng, radius=range, returns=results)
+        return res
+
+    def list_search(self, _zip, _range, _results=0):
+        #
+        _data = []
+        for zips in self.search(_zip, _range, _results):
+            _data.append(zips.zipcode)
+        return _data
 
 
 def main():
@@ -42,7 +48,8 @@ def main():
     print('—————————————————————————————————————')
     if VERBOSITY:
         print( 'ZIP:{}, Distance:{}'.format(args.zip, args.distance))
-    data = ZIPcodesInRangeList(args.zip, args.distance,args.limit)
+    ZIPinRange = ZIPcodesInRange(10)
+    data = ZIPinRange.list_search(args.zip, args.distance, args.limit)
     print( data )
 
 
