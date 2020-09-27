@@ -10,9 +10,19 @@ class ZIPcodesInRange(object):
     def __init__(self, default_range=30):
         self.range = default_range
         
+    def if_exists(self, zip):
+        search = SearchEngine(simple_zipcode=True, db_file_dir="/tmp")  # # set simple_zipcode=False to use rich info
+        zipcode = search.by_zipcode(zip)
+        if zipcode.zipcode:
+            return True
+        else:
+            return False
+
     def search(self, zip,range,results=0):
         #
         search = SearchEngine(simple_zipcode=True, db_file_dir="/tmp")  # set simple_zipcode=False to use rich info database
+        if not self.if_exists(zip):
+            return ''
         zipcode = search.by_zipcode(zip)
         if VERBOSITY:
             print('ZIP search results:')
